@@ -23,7 +23,23 @@ app.get('/', function (req, res) {
 app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
 });
+const express = require('express');
+const app = express();
 
+app.enable('trust proxy');
+
+app.get('/api/whoami', (req, res) => {
+  const ipaddress = req.ip;
+  const language = req.headers['accept-language'];
+  const software = req.headers['user-agent'];
+
+  res.json({ ipaddress, language, software });
+});
+
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
 // request to /api/whoami 
 app.get('/api/whoami', (req, res) => {
   res.json({
