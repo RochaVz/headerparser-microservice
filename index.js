@@ -1,34 +1,35 @@
-const express = require('express');
-const app = express();
-const path = require('path');
-const chalk = require('chalk');
-const cors = require('cors');
+// index.js
+// where your node app starts
 
-app.use(cors({optionsuccessStatus: 200}));
+// init project
+require('dotenv').config();
+var express = require('express');
+var app = express();
 
-app.get('/', (req, res, next) => res.sendFile(path.join(__dirname, '/index.html')));
+// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+// so that your API is remotely testable by FCC
+var cors = require('cors');
+const res = require('express/lib/response');
+app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 204
 
-app.get('/api/whoami', (req, res, next) => {
+// http://expressjs.com/en/starter/static-files.html
+app.use(express.static('public'));
 
-  const ip = req.headers['x-forwarded-for'] ||
-    req.connection.remoteAddress ||
-    req.socket.remoteAddress ||
-    req.connection.socket.remoteAddress;
-
-  res.json({
-    ipaddress: ip,
-    language: req.headers['accept-language'].split(',')[0],
-    software: req.headers['user-agent'].split(') ')[0].split(' (')[1]
-  });
+// http://expressjs.com/en/starter/basic-routing.html
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
 });
 
-const port = process.env.PORT || 8080;
-app.listen(port, function() {
-  console.log(chalk.blue(`Contact from intelligent life received on port ${port}`));
+// your first API endpoint...
+app.get('/api/whoami', function (req, res) {
+  const lang = req.headers['accept-language'];
+  const ip = req.headers['x-forwarded-for'].split(',')[0];
+  const system =  req.headers['user-agent'];
+  
+  res.json({ ipaddress: ip, language:lan,software:system});
 });
 
-app.use('/', (err, req, res, next) => {
-  console.log(chalk.red('Whoops!, we have a problem.'));
-  console.log(chalk.red(`ERROR: ${err.message}`));
-  res.sendStatus(err.status || 500);
+// listen for requests :)
+var listener = app.listen(process.env.PORT || 3000, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
 });
