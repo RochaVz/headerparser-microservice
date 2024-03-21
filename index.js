@@ -20,14 +20,18 @@ app.get('/', function (req, res) {
 });
 
 // your first API endpoint...
-app.get("/api/whoami", function (req, res) {
-  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-  var lang = req.headers["accept-language"];
-  var software = req.headers["user-agent"];
-  res.json({ipaddress: ip,
-   "language": lang, 
-   "software":software});
+app.get('/api/hello', function (req, res) {
+  res.json({ greeting: 'hello API' });
 });
+
+// request to /api/whoami 
+app.get('/api/whoami', (req, res) => {
+  res.json({
+    ipaddress:req.connection.remoteAddress,
+    language:req.headers['accept-language'],     
+    software:req.headers['user-agent']
+    })
+})
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
